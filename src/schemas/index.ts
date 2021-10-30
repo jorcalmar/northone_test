@@ -1,2 +1,2 @@
 export * from './createTaskBodySchema'
-export * from './signUpBodySchema'
+export * from './updateTaskBodySchema'

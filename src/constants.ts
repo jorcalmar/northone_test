@@ -6,7 +6,9 @@ export enum TaskStatuses {
 }
 
 export enum HttpStatus {
+    OK = httpStatus.OK,
     CREATED = httpStatus.CREATED,
     BAD_REQUEST = httpStatus.BAD_REQUEST,
-    INTERNAL_SERVER_ERROR = httpStatus.INTERNAL_SERVER_ERROR
+    INTERNAL_SERVER_ERROR = httpStatus.INTERNAL_SERVER_ERROR,
+    NOT_FOUND = httpStatus.NOT_FOUND
 }

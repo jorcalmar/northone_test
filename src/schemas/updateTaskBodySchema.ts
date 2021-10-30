@@ -1,4 +1,4 @@
-export const createTaskBodySchema = {
+export const updateTaskBodySchema = {
     type: 'object',
     properties: {
         title: {
@@ -12,6 +12,5 @@ export const createTaskBodySchema = {
             format: 'date'
         }
     },
-    required: ['description', 'dueDate', 'title'],
     additionalProperties: false
 }

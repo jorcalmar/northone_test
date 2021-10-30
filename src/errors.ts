@@ -1,9 +1,9 @@
-import * as httpStatus from 'http-status';
+import { HttpStatus } from './constants'
 
 export const errors = {
-    RESOURCE_NOT_FOUND: {
-      statusCode: httpStatus.NOT_FOUND,
-      message: 'Resource was not found',
-      name: 'RESOURCE_NOT_FOUND',
-    }
-  };
+  RESOURCE_NOT_FOUND: {
+    statusCode: HttpStatus.NOT_FOUND,
+    message: 'Resource was not found',
+    name: 'RESOURCE_NOT_FOUND',
+  }
+};
