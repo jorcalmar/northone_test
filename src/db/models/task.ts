@@ -1,8 +1,12 @@
 import { prop, getModelForClass } from '@typegoose/typegoose'
 import { TaskStatuses } from '../../constants'
 import { ITask } from '../../interfaces/task'
+import { v4 } from 'uuid'
 
-class Task implements ITask {
+export class Task implements ITask {
+    @prop({ default: () => v4(), index: true })
+    id: string
+
     @prop({ required: true })
     title: string
 
@@ -14,12 +18,10 @@ class Task implements ITask {
 
     @prop({ default: new Date() })
     dueDate: Date
-
-    @prop({ required: true, index: true })
-    userId: string
-
-    @prop({ required: true })
-    subTasks: [ITask]
 }
 
-export const taskModel = getModelForClass(Task, { schemaOptions: { timestamps: true } })
+export const taskModel = getModelForClass(Task, {
+    schemaOptions: {
+        timestamps: true
+    }
+})

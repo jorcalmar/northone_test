@@ -1,10 +1,11 @@
 import { TaskStatuses } from '../constants';
 
 export interface ITask {
+    id: String
     title: String
     description: String
     status: TaskStatuses
     dueDate: Date
-    userId: String
-    subTasks: [ITask]
 }
+
+export type ITaskInput = Omit<ITask, 'status' | 'id'>

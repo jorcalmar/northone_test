@@ -6,6 +6,7 @@ export const dbConnect = async (uri: string): Promise<Mongoose> => {
     if (!dbInstance) {
         dbInstance = await connect(uri);
     }
+
     console.log(`Connected to mongo: ${uri}`);
     return dbInstance;
 }
