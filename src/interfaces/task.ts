@@ -10,6 +10,8 @@ export interface ITask {
     deleted: boolean
     categoryId?: string
     category?: ICategory
+    subTasksIds?: string[]
+    parentId?: string
 }
 
 export type ITaskInput = Omit<ITask, 'status' | 'id'>

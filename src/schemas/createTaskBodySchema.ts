@@ -13,6 +13,9 @@ export const createTaskBodySchema = {
         },
         categoryId: {
             type: 'string'
+        },
+        parentId: {
+            type: 'string'
         }
     },
     required: ['description', 'dueDate', 'title'],
