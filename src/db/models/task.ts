@@ -1,6 +1,7 @@
-import { prop, getModelForClass } from '@typegoose/typegoose'
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 import { TaskStatuses } from '../../constants'
 import { ITask } from '../../interfaces/task'
+import { Category } from './category'
 import { v4 } from 'uuid'
 
 export class Task implements ITask {
@@ -21,6 +22,9 @@ export class Task implements ITask {
 
     @prop({ required: true, default: false })
     deleted: boolean
+
+    @prop({ autopopulate: true, ref: Category })
+    category: Ref<Category>
 }
 
 export const taskModel = getModelForClass(Task, {

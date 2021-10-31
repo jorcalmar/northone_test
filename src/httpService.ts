@@ -1,9 +1,9 @@
 import { createServer, plugins } from 'restify';
 import { dbConnect, closeDb } from './db/connection';
-import { homeController, createTaskRoute, updateTaskRoute, deleteTaskRoute, getTasksRoute } from './routes';
+import { homeController, createTaskRoute, updateTaskRoute, deleteTaskRoute, getTasksRoute, createCategoryRoute } from './routes';
 import config from 'config';
 import { bodySchemaValidatorMiddleware } from './middlewares/bodySchemaValidator';
-import { createTaskBodySchema, updateTaskBodySchema } from './schemas';
+import { createCategorySchema, createTaskBodySchema, updateTaskBodySchema } from './schemas';
 
 export const app = createServer()
 
@@ -18,7 +18,9 @@ export const start = async () => {
     app.post('/api/v1/task', bodySchemaValidatorMiddleware(createTaskBodySchema), createTaskRoute);
     app.patch('/api/v1/tasks/:taskId', bodySchemaValidatorMiddleware(updateTaskBodySchema), updateTaskRoute);
     app.del('/api/v1/tasks/:taskId', deleteTaskRoute);
-    app.get('/api/v1/tasks', getTasksRoute)
+    app.get('/api/v1/tasks', getTasksRoute);
+
+    app.post('/api/v1/category', bodySchemaValidatorMiddleware(createCategorySchema), createCategoryRoute);
 
     await dbConnect(config.get('MONGO_URL'));
     await app.listen(config.get('PORT'));

@@ -1,9 +1,9 @@
-import { createTasks } from '../../utils/data'
+import { createTasks } from '../../../utils/data'
 
-import { createTask, getTasks } from '../../../src/managers'
-import { errors } from '../../../src/errors'
+import { createTask, getTasks } from '../../../../src/managers'
+import { errors } from '../../../../src/errors'
 
-import { dbHooks } from '../../utils/db/dbHooks'
+import { dbHooks } from '../../../utils/db/dbHooks'
 
 describe('Tests get tasks manager', () => {
     dbHooks()
