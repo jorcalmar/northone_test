@@ -1,4 +1,5 @@
 import { serviceHooks } from '../../utils/service/serviceHooks'
+import { HttpStatus } from '../../../src/constants'
 
 import { app } from '../../../src/httpService'
 
@@ -10,25 +11,22 @@ describe('Calls service to create Task', () => {
     const apiRequest = request(app)
 
     it('Creates tasks successfully', async () => {
-        const result = await apiRequest
-            .post('/api/v1/users/me/task')
+        await apiRequest
+            .post('/api/v1/task')
             .send({
                 title: 'title1',
                 description: 'description1',
                 dueDate: '2021-01-01'
             })
-
-        expect(result.statusCode).toEqual(201);
-        expect(result.body.info).toEqual('Task created');
+            .expect(HttpStatus.CREATED)
     })
 
     it('Creates task with invalid body', async () => {
-        const result = await apiRequest
-            .post('/api/v1/users/me/task')
+        await apiRequest
+            .post('/api/v1/task')
             .send({
                 anyField: 'any-field'
             })
-
-        expect(result.statusCode).toEqual(400);
+            .expect(HttpStatus.BAD_REQUEST)
     })
 })

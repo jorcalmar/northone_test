@@ -18,6 +18,9 @@ export class Task implements ITask {
 
     @prop({ default: new Date() })
     dueDate: Date
+
+    @prop({ required: true, default: false })
+    deleted: boolean
 }
 
 export const taskModel = getModelForClass(Task, {

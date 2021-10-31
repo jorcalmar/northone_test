@@ -11,10 +11,6 @@ export const serviceHooks = () => {
         await close();
     })
 
-    beforeEach(async () => {
-        await dropDb();
-    })
-
     afterEach(async () => {
         await dropDb();
     })

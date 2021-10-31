@@ -19,7 +19,8 @@ describe('Update task manager', () => {
 
         const updatedTask = await updateTask(id, updateInput)
 
-        expect(updatedTask).toMatchObject(updateInput)
+        expect(updatedTask.title).toEqual(updateInput.title)
+        expect(updatedTask.description).toEqual(updateInput.description)
     })
 
     it('Updates non existent task', async () => {

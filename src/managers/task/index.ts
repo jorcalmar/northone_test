@@ -15,6 +15,8 @@ export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>
         id: taskId
     }, {
         $set: updateTaskInput
+    }, {
+        new: true
     });
 
     if (!updatedTask) throw errors.RESOURCE_NOT_FOUND
@@ -22,4 +24,23 @@ export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>
     console.log('Task updated', { id: updatedTask.id })
 
     return updatedTask
+}
+
+export const deleteTask = async (taskId: string): Promise<Task> => {
+    const deletedTask = await taskModel.findOneAndUpdate({
+        id: taskId,
+        deleted: false
+    }, {
+        $set: {
+            deleted: true
+        }
+    }, {
+        new: true
+    })
+
+    if (!deletedTask) throw errors.RESOURCE_NOT_FOUND
+
+    console.log('Task deleted', { id: taskId })
+
+    return deletedTask
 }

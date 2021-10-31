@@ -6,6 +6,7 @@ export interface ITask {
     description: String
     status: TaskStatuses
     dueDate: Date
+    deleted: boolean
 }
 
 export type ITaskInput = Omit<ITask, 'status' | 'id'>
