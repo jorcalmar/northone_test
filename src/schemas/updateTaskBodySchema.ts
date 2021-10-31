@@ -10,7 +10,11 @@ export const updateTaskBodySchema = {
         dueDate: {
             type: 'string',
             format: 'date'
+        },
+        categoryId: {
+            type: 'string'
         }
     },
+    minProperties: 1,
     additionalProperties: false
 }

@@ -1,6 +1,6 @@
 import { createServer, plugins } from 'restify';
 import { dbConnect, closeDb } from './db/connection';
-import { homeController, createTaskRoute, updateTaskRoute, deleteTaskRoute, getTasksRoute, createCategoryRoute } from './routes';
+import { homeController, createTaskRoute, updateTaskRoute, deleteTaskRoute, getTasksRoute, createCategoryRoute, getOneTaskRoute } from './routes';
 import config from 'config';
 import { bodySchemaValidatorMiddleware } from './middlewares/bodySchemaValidator';
 import { createCategorySchema, createTaskBodySchema, updateTaskBodySchema } from './schemas';
@@ -19,6 +19,7 @@ export const start = async () => {
     app.patch('/api/v1/tasks/:taskId', bodySchemaValidatorMiddleware(updateTaskBodySchema), updateTaskRoute);
     app.del('/api/v1/tasks/:taskId', deleteTaskRoute);
     app.get('/api/v1/tasks', getTasksRoute);
+    app.get('/api/v1/tasks/:taskId', getOneTaskRoute);
 
     app.post('/api/v1/category', bodySchemaValidatorMiddleware(createCategorySchema), createCategoryRoute);
 

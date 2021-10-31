@@ -7,40 +7,38 @@ import { HttpStatus } from '../../../src/constants'
 
 import request from 'supertest'
 
-describe('Calls service to get tasks', () => {
+describe('Calls service to get one task', () => {
     serviceHooks()
 
     const apiRequest = request(app)
 
     it('Gets tasks successfully', async () => {
         const taskInput = createTaskInput()
-        await createTask(taskInput)
+        const { id: taskId } = await createTask(taskInput)
 
         const result = await apiRequest
-            .get('/api/v1/tasks')
+            .get(`/api/v1/tasks/${taskId}`)
             .expect(HttpStatus.OK)
 
-        expect(result.body.data.length).toEqual(1)
+        expect(result.body.data).toMatchSnapshot()
     })
 
-    it('Gets tasks when db is empty', async () => {
+    it('Gets one task when db is empty', async () => {
         await apiRequest
-            .get('/api/v1/tasks')
+            .get('/api/v1/tasks/any-id')
             .expect(HttpStatus.NOT_FOUND)
     })
 
     it('Gets tasks with existing category', async () => {
         const taskInput = createTaskInput()
-        await createTask(taskInput)
+        const { id: taskId } = await createTask(taskInput)
 
         const result = await apiRequest
-            .get('/api/v1/tasks')
+            .get(`/api/v1/tasks/${taskId}`)
             .expect(HttpStatus.OK)
 
-        const returnedTasks = result.body.data
+        const returnedTask = result.body.data
 
-        expect(returnedTasks.length).toEqual(1)
-
-        expect(returnedTasks).toMatchSnapshot()
+        expect(returnedTask).toMatchSnapshot()
     })
 })

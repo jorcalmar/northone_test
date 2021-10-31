@@ -1,12 +1,8 @@
-import { prop, getModelForClass, plugin } from '@typegoose/typegoose'
-import { ICategory } from '../../interfaces/category'
-
-import autopopulate from 'mongoose-autopopulate'
+import { prop, getModelForClass } from '@typegoose/typegoose'
 import { v4 } from 'uuid'
 
-@plugin(autopopulate)
-export class Category implements ICategory {
-    @prop({ default: () => v4(), index: true })
+export class Category {
+    @prop({ default: () => v4(), index: true, unique: true })
     id: string
 
     @prop({ required: true })
@@ -15,6 +11,16 @@ export class Category implements ICategory {
 
 export const categoryModel = getModelForClass(Category, {
     schemaOptions: {
-        timestamps: true
+        timestamps: true,
+        toJSON: {
+            transform: (_doc: any, ret: any) => {
+                delete ret.__v
+                delete ret._id
+
+                delete ret.categoryId
+
+                return ret
+            }
+        }
     }
 })

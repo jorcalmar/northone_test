@@ -1,7 +1,7 @@
-import { createTask, updateTask } from '../../../../src/managers'
+import { createCategory, createTask, updateTask } from '../../../../src/managers'
 import { dbHooks } from '../../../utils/db/dbHooks'
 
-import { createTaskInput } from '../../../utils/data'
+import { createCategoryInput, createTaskInput } from '../../../utils/data'
 
 import { errors } from '../../../../src/errors'
 
@@ -23,7 +23,7 @@ describe('Update task manager', () => {
         expect(updatedTask.description).toEqual(updateInput.description)
     })
 
-    it('Updates non existent task', async () => {
+    it('Updates non existing task', async () => {
         const id = 'any-id'
 
         const updateInput = {
@@ -32,5 +32,66 @@ describe('Update task manager', () => {
         }
 
         expect(updateTask(id, updateInput)).rejects.toMatchObject(errors.RESOURCE_NOT_FOUND)
+    })
+
+    it('Updates task with existing category', async () => {
+        const categoryInput = createCategoryInput({ name: 'My category' })
+        const createdCategory = await createCategory(categoryInput)
+
+        const input = createTaskInput({
+            categoryId: createdCategory.id
+        });
+
+        const { id } = await createTask(input);
+
+        const updateInput = {
+            title: 'new title',
+            description: 'new description'
+        }
+
+        const updatedTask = await updateTask(id, updateInput)
+
+        expect(updatedTask.title).toEqual(updateInput.title)
+        expect(updatedTask.description).toEqual(updateInput.description)
+    })
+
+    it('Updates task with non existing category', async () => {
+        const input = createTaskInput({});
+
+        const { id } = await createTask(input);
+
+        const updateInput = {
+            title: 'new title',
+            description: 'new description',
+            categoryId: 'any-category'
+        }
+
+        expect(updateTask(id, updateInput)).rejects.toMatchObject(errors.CATEGORY_NOT_FOUND)
+    })
+
+    it('Changes task category', async () => {
+        const categoryInput = createCategoryInput({ name: 'My category' })
+        const newCategoryInput = createCategoryInput({ name: 'New category' })
+
+        const createdCategory = await createCategory(categoryInput)
+        const newCategory = await createCategory(newCategoryInput)
+
+        const input = createTaskInput({
+            categoryId: createdCategory.id
+        });
+
+        const { id } = await createTask(input);
+
+        const updateInput = {
+            title: 'new title',
+            description: 'new description',
+            categoryId: newCategory.id
+        }
+
+        const updatedTask = await updateTask(id, updateInput)
+
+        expect(updatedTask.title).toEqual(updateInput.title)
+        expect(updatedTask.description).toEqual(updateInput.description)
+        expect(updatedTask.category.name).toEqual(newCategory.name)
     })
 })

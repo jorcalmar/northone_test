@@ -1,9 +1,19 @@
-import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { prop, getModelForClass, pre } from '@typegoose/typegoose'
 import { TaskStatuses } from '../../constants'
-import { ITask } from '../../interfaces/task'
 import { Category } from './category'
 import { v4 } from 'uuid'
+import { ITask } from '../../interfaces/task'
 
+const populateHook = function (next) {
+    this.populate('category')
+
+    return next()
+}
+
+@pre<Task>('findOneAndUpdate', populateHook)
+@pre<Task>('find', populateHook)
+@pre<Task>('findOne', populateHook)
+@pre<Task>('save', populateHook)
 export class Task implements ITask {
     @prop({ default: () => v4(), index: true })
     id: string
@@ -23,12 +33,34 @@ export class Task implements ITask {
     @prop({ required: true, default: false })
     deleted: boolean
 
-    @prop({ autopopulate: true, ref: Category })
-    category: Ref<Category>
+    @prop({ required: false })
+    categoryId?: string
+
+    @prop({
+        ref: Category,
+        foreignField: 'id',
+        localField: 'categoryId',
+        justOne: true
+    })
+    category: Category
 }
 
 export const taskModel = getModelForClass(Task, {
     schemaOptions: {
-        timestamps: true
+        timestamps: true,
+        toJSON: {
+            transform: (_doc: any, ret: any) => {
+                delete ret.__v
+                delete ret._id
+
+                delete ret.categoryId
+
+                return ret;
+            },
+            virtuals: true
+        },
+        toObject: {
+            virtuals: true
+        }
     }
 })

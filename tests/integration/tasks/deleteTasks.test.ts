@@ -20,7 +20,7 @@ describe('Calls service to delete tasks', () => {
             .expect(HttpStatus.OK)
     })
 
-    it('Deletes non existent task', async () => {
+    it('Deletes non existing task', async () => {
         await apiRequest
             .del('/api/v1/tasks/any-task-id')
             .expect(HttpStatus.NOT_FOUND)
