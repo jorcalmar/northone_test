@@ -2,6 +2,9 @@ import { taskModel, Task } from '../../db/models/task'
 import { ITaskInput, ITask } from '../../interfaces/task'
 import { validateCategory } from '../../managers'
 
+import moment from 'moment'
+
+import { TaskStatuses } from '../../constants'
 import { errors } from '../../errors'
 
 export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => {
@@ -21,7 +24,7 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
         await updateParent(parentId, createdTask.id)
     }
 
-    console.log('Task created', { id: createdTask.id })
+    // console.log('Task created', { id: createdTask.id })
 
     return createdTask;
 }
@@ -71,8 +74,8 @@ export const deleteTask = async (taskId: string): Promise<Task> => {
  * Gets all tasks.
  * @returns List of tasks
  */
-export const getTasks = async (): Promise<Task[]> => {
-    const tasks = await taskModel.find({})
+export const getTasks = async (query = {}): Promise<Task[]> => {
+    const tasks = await taskModel.find(query)
 
     if (tasks.length === 0) {
         throw errors.RESOURCE_NOT_FOUND
@@ -110,3 +113,16 @@ export const updateParent = async (parentId: string, createdTaskId: string): Pro
 }, {
     new: true
 })
+
+export const updateDueTasks = async () => {
+    const todaysDate = moment().format('YYYY-MM-DD')
+
+    await taskModel.updateMany({
+        status: { $ne: TaskStatuses.DONE },
+        dueDate: todaysDate
+    }, {
+        $set: {
+            status: TaskStatuses.EXPIRED
+        }
+    })
+}

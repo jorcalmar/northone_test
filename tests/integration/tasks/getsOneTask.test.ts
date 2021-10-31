@@ -12,7 +12,7 @@ describe('Calls service to get one task', () => {
 
     const apiRequest = request(app)
 
-    it('Gets tasks successfully', async () => {
+    it('Gets one task successfully', async () => {
         const taskInput = createTaskInput()
         const { id: taskId } = await createTask(taskInput)
 
@@ -20,7 +20,11 @@ describe('Calls service to get one task', () => {
             .get(`/api/v1/tasks/${taskId}`)
             .expect(HttpStatus.OK)
 
-        expect(result.body.data).toMatchSnapshot()
+        expect(result.body.data).toMatchSnapshot({
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            id: expect.any(String)
+        })
     })
 
     it('Gets one task when db is empty', async () => {
@@ -39,6 +43,10 @@ describe('Calls service to get one task', () => {
 
         const returnedTask = result.body.data
 
-        expect(returnedTask).toMatchSnapshot()
+        expect(returnedTask).toMatchSnapshot({
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            id: expect.any(String)
+        })
     })
 })

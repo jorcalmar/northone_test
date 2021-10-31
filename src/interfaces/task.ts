@@ -6,7 +6,7 @@ export interface ITask {
     title: String
     description: String
     status: TaskStatuses
-    dueDate: Date
+    dueDate: string
     deleted: boolean
     categoryId?: string
     category?: ICategory

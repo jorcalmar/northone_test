@@ -27,8 +27,8 @@ export class Task implements ITask {
     @prop({ default: TaskStatuses.PENDING })
     status: TaskStatuses
 
-    @prop({ default: new Date() })
-    dueDate: Date
+    @prop({ required: true })
+    dueDate: string
 
     @prop({ required: true, default: false })
     deleted: boolean
