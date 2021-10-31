@@ -44,3 +44,17 @@ export const deleteTask = async (taskId: string): Promise<Task> => {
 
     return deletedTask
 }
+
+/**
+ * Gets all tasks.
+ * @returns List of tasks
+ */
+export const getTasks = async (): Promise<Task[]> => {
+    const tasks = await taskModel.find({});
+
+    if (tasks.length === 0) {
+        throw errors.RESOURCE_NOT_FOUND
+    }
+
+    return tasks
+}

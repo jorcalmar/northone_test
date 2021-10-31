@@ -1,5 +1,5 @@
 import { Request, Response, Next } from 'restify'
-import { createTask, updateTask, deleteTask } from '../../managers'
+import { createTask, updateTask, deleteTask, getTasks } from '../../managers'
 
 import { HttpStatus } from '../../constants';
 
@@ -91,5 +91,31 @@ export const deleteTaskRoute = async (req: Request, res: Response, next: Next): 
         });
 
         return next();
+    }
+}
+
+/**
+ * Route that handles getting tasks
+ * @param req - Http Request
+ * @param res - Http Response 
+ * @param next - Callback
+ * @returns - void
+ */
+export const getTasksRoute = async (_req: Request, res: Response, next: Next): Promise<void> => {
+    try {
+        const tasks = await getTasks();
+
+        res.send(HttpStatus.OK, {
+            info: 'Tasks retrieved',
+            data: tasks
+        })
+
+        return next()
+     } catch (error) {
+        console.log('Error getting tasks', error)
+
+        res.send(error.statusCode, {
+            error
+        })
     }
 }
