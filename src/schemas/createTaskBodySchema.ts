@@ -10,6 +10,9 @@ export const createTaskBodySchema = {
         dueDate: {
             type: 'string',
             format: 'date'
+        },
+        categoryId: {
+            type: 'string'
         }
     },
     required: ['description', 'dueDate', 'title'],

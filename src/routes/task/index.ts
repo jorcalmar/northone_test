@@ -1,5 +1,5 @@
 import { Request, Response, Next } from 'restify'
-import { createTask, updateTask, deleteTask, getTasks } from '../../managers'
+import { createTask, updateTask, deleteTask, getTasks, getOneTask } from '../../managers'
 
 import { HttpStatus } from '../../constants';
 
@@ -25,7 +25,7 @@ export const createTaskRoute = async (req: Request, res: Response, next: Next): 
     } catch (error) {
         console.log('Error creating task', { error })
 
-        res.send(HttpStatus.INTERNAL_SERVER_ERROR, {
+        res.send(error.statusCode, {
             error
         });
 
@@ -111,11 +111,30 @@ export const getTasksRoute = async (_req: Request, res: Response, next: Next): P
         })
 
         return next()
-     } catch (error) {
+    } catch (error) {
         console.log('Error getting tasks', error)
 
         res.send(error.statusCode, {
             error
         })
     }
+}
+
+export const getOneTaskRoute = async (req: Request, res: Response, next: Next): Promise<void> => {
+    try {
+        const { taskId } = req.params
+
+        const foundTask = await getOneTask(taskId)
+
+        res.send(HttpStatus.OK, {
+            info: 'Task found',
+            data: foundTask
+        })
+    } catch (error) {
+        res.send(error.statusCode, {
+            error
+        })
+    }
+
+    return next()
 }

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Calls service to get one task Gets tasks successfully 1`] = `
+Object {
+  "category": null,
+  "createdAt": "2021-10-31T18:45:12.759Z",
+  "deleted": false,
+  "description": "description1",
+  "dueDate": "2021-10-31T18:45:12.757Z",
+  "id": "790eb9ef-440f-4fae-b705-7d638412b1d9",
+  "status": "PENDING",
+  "title": "title1",
+  "updatedAt": "2021-10-31T18:45:12.759Z",
+}
+`;
+
+exports[`Calls service to get one task Gets tasks with existing category 1`] = `
+Object {
+  "category": null,
+  "createdAt": "2021-10-31T18:45:12.870Z",
+  "deleted": false,
+  "description": "description1",
+  "dueDate": "2021-10-31T18:45:12.869Z",
+  "id": "bf430efe-ccab-4840-98b6-68500282b95e",
+  "status": "PENDING",
+  "title": "title1",
+  "updatedAt": "2021-10-31T18:45:12.870Z",
+}
+`;

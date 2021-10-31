@@ -15,7 +15,7 @@ describe('Tests delete task manager', () => {
         expect(deletedTask.deleted).toEqual(true)
     })
 
-    it('Deletes non existent task', async () => {
+    it('Deletes non existing task', async () => {
         const taskId = 'any-id'
         expect(deleteTask(taskId)).rejects.toMatchObject(errors.RESOURCE_NOT_FOUND)
     })

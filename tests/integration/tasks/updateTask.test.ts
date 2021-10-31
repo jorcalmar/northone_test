@@ -32,7 +32,7 @@ describe('Calls service to update tasks', () => {
             }).expect(HttpStatus.BAD_REQUEST)
     })
 
-    it('Updates non existent task', async () => {
+    it('Updates non existing task', async () => {
         await apiRequest
             .patch('/api/v1/tasks/any-task-id')
             .send({
