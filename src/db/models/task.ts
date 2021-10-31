@@ -1,4 +1,4 @@
-import { prop, getModelForClass, pre } from '@typegoose/typegoose'
+import { prop, getModelForClass, pre, index } from '@typegoose/typegoose'
 import { TaskStatuses } from '../../constants'
 import { Category } from './category'
 import { v4 } from 'uuid'
@@ -14,6 +14,10 @@ const populateHook = function (next) {
 @pre<Task>('find', populateHook)
 @pre<Task>('findOne', populateHook)
 @pre<Task>('save', populateHook)
+@index({
+    title: 'text',
+    description: 'text'
+})
 export class Task implements ITask {
     @prop({ default: () => v4(), index: true })
     id: string

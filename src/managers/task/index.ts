@@ -63,8 +63,8 @@ export const deleteTask = async (taskId: string): Promise<Task> => {
  * Gets all tasks.
  * @returns List of tasks
  */
-export const getTasks = async (): Promise<Task[]> => {
-    const tasks = await taskModel.find({})
+export const getTasks = async (query = {}): Promise<Task[]> => {
+    const tasks = await taskModel.find(query)
 
     if (tasks.length === 0) {
         throw errors.RESOURCE_NOT_FOUND
