@@ -1,3 +1,4 @@
+import { ICategory } from '../../src/interfaces/category'
 import { ITaskInput } from '../../src/interfaces/task'
 
 export const createTaskInput = (values?: Partial<ITaskInput>): ITaskInput => ({
@@ -19,3 +20,8 @@ export const createTasks = (numTasks: number, values?: Partial<ITaskInput>): ITa
 
     return tasks;
 }
+
+export const createCategoryInput = (values?: Partial<ICategory>) => ({
+    name: 'any-name',
+    ...values
+})

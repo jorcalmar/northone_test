@@ -1,9 +1,9 @@
-import { createTask, updateTask } from '../../../src/managers'
-import { dbHooks } from '../../utils/db/dbHooks'
+import { createTask, updateTask } from '../../../../src/managers'
+import { dbHooks } from '../../../utils/db/dbHooks'
 
-import { createTaskInput } from '../../utils/data'
+import { createTaskInput } from '../../../utils/data'
 
-import { errors } from '../../../src/errors'
+import { errors } from '../../../../src/errors'
 
 describe('Update task manager', () => {
     dbHooks()

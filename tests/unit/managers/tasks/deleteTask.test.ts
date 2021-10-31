@@ -1,8 +1,8 @@
-import { createTask, deleteTask } from '../../../src/managers/task'
-import { errors } from '../../../src/errors'
+import { createTask, deleteTask } from '../../../../src/managers/task'
+import { errors } from '../../../../src/errors'
 
-import { dbHooks } from '../../utils/db/dbHooks'
-import { createTaskInput } from '../../utils/data'
+import { dbHooks } from '../../../utils/db/dbHooks'
+import { createTaskInput } from '../../../utils/data'
 
 describe('Tests delete task manager', () => {
     dbHooks()
