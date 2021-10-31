@@ -5,13 +5,21 @@ import { validateCategory } from '../../managers'
 import { errors } from '../../errors'
 
 export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => {
-    const { categoryId } = createTaskInput;
+    const { categoryId, parentId } = createTaskInput;
 
     if (categoryId) {
         await validateCategory(categoryId)
     }
 
+    if (parentId) {
+        await validateParent(parentId)
+    }
+
     const createdTask = await taskModel.create(createTaskInput);
+
+    if (parentId) {
+        await updateParent(parentId, createdTask.id)
+    }
 
     console.log('Task created', { id: createdTask.id })
 
@@ -82,3 +90,23 @@ export const getOneTask = async (taskId: string): Promise<ITask> => {
 
     return task
 }
+
+export const validateParent = async (parentId: string): Promise<ITask> => {
+    const parent = await taskModel.findOne({ id: parentId });
+
+    if (!parent) throw errors.PARENT_NOT_FOUND
+
+    if (parent.parentId) throw errors.PARENT_CANT_BE_SUBTASK
+
+    return parent
+}
+
+export const updateParent = async (parentId: string, createdTaskId: string): Promise<ITask | null> => taskModel.findOneAndUpdate({
+    id: parentId
+}, {
+    $push: {
+        subTasksIds: createdTaskId
+    }
+}, {
+    new: true
+})

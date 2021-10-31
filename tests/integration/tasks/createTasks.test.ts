@@ -4,9 +4,9 @@ import { HttpStatus } from '../../../src/constants'
 import { app } from '../../../src/httpService'
 
 import request from 'supertest'
-import { createCategory } from '../../../src/managers'
+import { createCategory, createTask } from '../../../src/managers'
 
-import { createCategoryInput } from '../../utils/data'
+import { createCategoryInput, createTaskInput } from '../../utils/data'
 
 describe('Calls service to create Task', () => {
     serviceHooks()
@@ -61,5 +61,56 @@ describe('Calls service to create Task', () => {
                 categoryId: 'any-category-id'
             })
             .expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Creates subtask successfully', async () => {
+        const parentTaskInput = createTaskInput()
+
+        const parentTask = await createTask(parentTaskInput)
+
+        const result = await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: '2021-01-01',
+                parentId: parentTask.id
+            })
+            .expect(HttpStatus.CREATED)
+
+        expect(result.body.data.parentId).toEqual(parentTask.id)
+    })
+
+    it('Creates subtask - parent does not exist', async () => {
+        await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: '2021-01-01',
+                parentId: 'any-id'
+            })
+            .expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Creates subtask - parent is subtask', async () => {
+        const parentTaskInput = createTaskInput()
+        const parentTask = await createTask(parentTaskInput)
+
+        const subTaskInput = createTaskInput({
+            parentId: parentTask.id
+        })
+
+        const subTask = await createTask(subTaskInput)
+
+        await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: '2021-01-01',
+                parentId: subTask.id
+            })
+            .expect(HttpStatus.BAD_REQUEST)
     })
 })

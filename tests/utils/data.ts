@@ -6,6 +6,7 @@ export const createTaskInput = (values?: Partial<ITask>): ITaskInput => ({
     description: 'description1',
     dueDate: new Date(),
     deleted: false,
+    subTasksIds: [],
     ...values
 })
 

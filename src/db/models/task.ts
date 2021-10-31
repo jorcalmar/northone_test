@@ -43,6 +43,12 @@ export class Task implements ITask {
         justOne: true
     })
     category: Category
+
+    @prop({ required: false })
+    subTasksIds?: string[]
+
+    @prop({ required: false })
+    parentId?: string
 }
 
 export const taskModel = getModelForClass(Task, {
