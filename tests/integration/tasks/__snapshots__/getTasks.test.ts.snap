@@ -1,17 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Calls service to get tasks Gets tasks with existing category 1`] = `
-Array [
-  Object {
-    "category": null,
-    "createdAt": "2021-10-31T18:45:10.452Z",
-    "deleted": false,
-    "description": "description1",
-    "dueDate": "2021-10-31T18:45:10.446Z",
-    "id": "a709be2a-891e-43ff-a270-24b1c2cd82bc",
-    "status": "PENDING",
-    "title": "title1",
-    "updatedAt": "2021-10-31T18:45:10.452Z",
-  },
-]
+Object {
+  "category": null,
+  "createdAt": Any<String>,
+  "deleted": false,
+  "description": "description1",
+  "dueDate": "2099-01-1",
+  "id": Any<String>,
+  "status": "PENDING",
+  "subTasksIds": Array [],
+  "title": "title1",
+  "updatedAt": Any<String>,
+}
 `;

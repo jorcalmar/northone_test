@@ -2,7 +2,9 @@ import * as httpStatus from 'http-status'
 
 export enum TaskStatuses {
     PENDING = 'PENDING',
-    DONE = 'DONE'
+    IN_PROGRESS = 'IN_PROGRESS',
+    DONE = 'DONE',
+    EXPIRED = 'EXPIRED'
 }
 
 export enum HttpStatus {

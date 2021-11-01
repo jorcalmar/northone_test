@@ -4,13 +4,13 @@ import { ITaskInput, ITask } from '../../src/interfaces/task'
 export const createTaskInput = (values?: Partial<ITask>): ITaskInput => ({
     title: 'title1',
     description: 'description1',
-    dueDate: new Date(),
+    dueDate: '2099-01-1',
     deleted: false,
     subTasksIds: [],
     ...values
 })
 
-export const createTasks = (numTasks: number, values?: Partial<ITaskInput>): ITaskInput[] => {
+export const createTasks = (numTasks: number, values?: Partial<ITask>): ITaskInput[] => {
     const tasks: ITaskInput[] = []
 
     while (numTasks) {
