@@ -49,4 +49,15 @@ describe('Tests get tasks manager', () => {
 
         expect(task.daysLeft).toEqual(numDaysDiff)
     })
+
+    it('Gets deleted task', async () => {
+        const tasksToCreate = createTaskInput({
+            deleted: true
+        });
+
+        
+        const createdTask = await createTask(tasksToCreate)
+
+        expect(getOneTask(createdTask.id)).rejects.toMatchObject(errors.RESOURCE_NOT_FOUND)
+    })
 })

@@ -12,6 +12,7 @@ export const app = createServer()
  */
 export const start = async () => {
     app.use(plugins.bodyParser());
+    app.use(plugins.queryParser());
 
     app.get('/', homeController);
 

@@ -101,9 +101,10 @@ export const deleteTaskRoute = async (req: Request, res: Response, next: Next): 
  * @param next - Callback
  * @returns - void
  */
-export const getTasksRoute = async (_req: Request, res: Response, next: Next): Promise<void> => {
+export const getTasksRoute = async (req: Request, res: Response, next: Next): Promise<void> => {
     try {
-        const tasks = await getTasks();
+        const query = req.query
+        const tasks = await getTasks(query);
 
         res.send(HttpStatus.OK, {
             info: 'Tasks retrieved',

@@ -10,6 +10,12 @@ describe('Validates task date manager', () => {
         expect(() => validateDate(dueDate)).not.toThrow()
     })
 
+    it('tests today as date', () => {
+        const dueDate = moment().format('YYYY-MM-DD')
+
+        expect(() => validateDate(dueDate)).not.toThrow()
+    })
+
     it('tests invalid date', () => {
         const dueDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
 
