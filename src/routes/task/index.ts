@@ -103,7 +103,14 @@ export const deleteTaskRoute = async (req: Request, res: Response, next: Next): 
  */
 export const getTasksRoute = async (req: Request, res: Response, next: Next): Promise<void> => {
     try {
-        const query = req.query
+        const searchTextQuery = req.query?.search
+
+        const query = searchTextQuery ? {
+            $text: {
+                $search: searchTextQuery
+            }
+        } : {}
+
         const tasks = await getTasks(query);
 
         res.send(HttpStatus.OK, {
