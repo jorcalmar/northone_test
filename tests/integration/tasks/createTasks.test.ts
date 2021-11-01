@@ -6,7 +6,7 @@ import { app } from '../../../src/httpService'
 import request from 'supertest'
 import { createCategory, createTask } from '../../../src/managers'
 
-import { createCategoryInput, createTaskInput } from '../../utils/data'
+import { createCategoryInput, createTaskInput, validDueDate, invalidDueDate } from '../../utils/data'
 
 describe('Calls service to create Task', () => {
     serviceHooks()
@@ -19,7 +19,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01'
+                dueDate: validDueDate
             })
             .expect(HttpStatus.CREATED)
     })
@@ -45,7 +45,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 categoryId: createdCategory.id
             })
             .expect(HttpStatus.CREATED)
@@ -57,7 +57,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 categoryId: 'any-category-id'
             })
             .expect(HttpStatus.NOT_FOUND)
@@ -73,7 +73,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 parentId: parentTask.id
             })
             .expect(HttpStatus.CREATED)
@@ -87,9 +87,20 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 parentId: 'any-id'
             })
             .expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Creates tasks with wrong date', async () => {
+        await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: invalidDueDate
+            })
+            .expect(HttpStatus.BAD_REQUEST)
     })
 })

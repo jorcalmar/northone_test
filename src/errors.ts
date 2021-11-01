@@ -20,5 +20,10 @@ export const errors = {
     statusCode: HttpStatus.BAD_REQUEST,
     message: 'Too many levels of subtasks',
     name: 'MAX_NESTED_LEVEL_REACHED'
+  },
+  INVALID_DUE_DATE: {
+    statusCode: HttpStatus.BAD_REQUEST,
+    message: 'Due date is invalid',
+    name: 'INVALID_DUE_DATE'
   }
 };

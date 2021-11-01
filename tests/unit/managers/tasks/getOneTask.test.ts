@@ -4,6 +4,7 @@ import { createTask, getOneTask, createCategory } from '../../../../src/managers
 import { errors } from '../../../../src/errors'
 
 import { dbHooks } from '../../../utils/db/dbHooks'
+import moment from 'moment'
 
 describe('Tests get tasks manager', () => {
     dbHooks()
@@ -33,5 +34,19 @@ describe('Tests get tasks manager', () => {
         const task = await getOneTask(createdTask.id);
 
         expect(task.category?.name).toEqual(createdCategory.name)
+    })
+
+    it('Gets task and validates days left', async () => {
+        const numDaysDiff = 5
+
+        const tasksToCreate = createTaskInput({
+            dueDate: moment().add(numDaysDiff, 'days').format('YYYY-MM-DD')
+        });
+
+        const createdTask = await createTask(tasksToCreate)
+
+        const task = await getOneTask(createdTask.id)
+
+        expect(task.daysLeft).toEqual(numDaysDiff)
     })
 })

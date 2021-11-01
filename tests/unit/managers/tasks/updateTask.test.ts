@@ -1,7 +1,7 @@
 import { createCategory, createTask, updateTask } from '../../../../src/managers'
 import { dbHooks } from '../../../utils/db/dbHooks'
 
-import { createCategoryInput, createTaskInput } from '../../../utils/data'
+import { createCategoryInput, createTaskInput, invalidDueDate, validDueDate } from '../../../utils/data'
 
 import { errors } from '../../../../src/errors'
 
@@ -93,5 +93,31 @@ describe('Update task manager', () => {
         expect(updatedTask.title).toEqual(updateInput.title)
         expect(updatedTask.description).toEqual(updateInput.description)
         expect(updatedTask.category.name).toEqual(newCategory.name)
+    })
+
+    it('Updates task with valid date', async () => {
+        const input = createTaskInput({});
+
+        const { id } = await createTask(input);
+
+        const updateInput = {
+            dueDate: validDueDate
+        }
+
+        const updatedTask = await updateTask(id, updateInput)
+
+        expect(updatedTask.dueDate).toEqual(validDueDate)
+    })
+
+    it('Updates task with invalid date', async () => {
+        const input = createTaskInput();
+
+        const { id } = await createTask(input);
+
+        const updateInput = {
+            dueDate: invalidDueDate
+        }
+
+        expect(updateTask(id, updateInput)).rejects.toMatchObject(errors.INVALID_DUE_DATE)
     })
 })

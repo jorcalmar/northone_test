@@ -4,9 +4,10 @@ exports[`Calls service to get tasks Gets tasks with existing category 1`] = `
 Object {
   "category": null,
   "createdAt": Any<String>,
+  "daysLeft": 4,
   "deleted": false,
   "description": "description1",
-  "dueDate": "2099-01-1",
+  "dueDate": "2021-11-05",
   "id": Any<String>,
   "status": "PENDING",
   "subTasksIds": Array [],
