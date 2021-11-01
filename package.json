@@ -9,8 +9,8 @@
   "scripts": {
     "test": "NODE_ENV=test jest tests/* --runInBand",
     "build": "tsc",
-    "start": "npm run build & node ./dist/start.js",
-    "watch": "npm run build & nodemon",
+    "start": "npm run build && node ./dist/start.js",
+    "watch": "npm run build && nodemon",
     "job-update-due-tasks": "node ./dist/jobs/updateDueTasks/start.js"
   },
   "author": "",

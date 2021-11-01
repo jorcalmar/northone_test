@@ -1,6 +1,6 @@
 import { createTaskInput, createTasks } from '../../utils/data'
 import { dbHooks } from '../../utils/db/dbHooks'
-import {  getTasks, updateDueTasks } from '../../../src/managers'
+import { getTasks, updateDueTasks } from '../../../src/managers'
 
 import { TaskStatuses } from '../../../src/constants'
 
@@ -13,6 +13,7 @@ describe('Tests job that updates due tasks', () => {
 
     it('Updates all tasks', async () => {
         const today = moment().format('YYYY-MM-DD')
+        const yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD')
         const tomorrow = moment().add(1, 'days').format('YYYY-MM-DD')
 
         const numExpiredTasks = 50
@@ -20,7 +21,7 @@ describe('Tests job that updates due tasks', () => {
         const numDoneTasksExpireToday = 100
 
         const dueTasksInputs = createTasks(numExpiredTasks, {
-            dueDate: today,
+            dueDate: yesterday,
             status: TaskStatuses.PENDING
         })
 
@@ -48,19 +49,19 @@ describe('Tests job that updates due tasks', () => {
     })
 
     it('Updates all tasks - one task with subtasks', async () => {
-        const today = moment().format('YYYY-MM-DD')
+        const yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD')
 
         const numSubTasks = 300
 
         const parentTaskInput = createTaskInput({
-            dueDate: today,
+            dueDate: yesterday,
             status: TaskStatuses.PENDING
         })
 
         const parentTask = await taskModel.create(parentTaskInput)
 
         const subTasksInputs = createTasks(numSubTasks, {
-            dueDate: today,
+            dueDate: yesterday,
             status: TaskStatuses.PENDING,
             parentId: parentTask.id
         })

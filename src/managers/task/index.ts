@@ -123,7 +123,7 @@ export const updateParent = async (parentId: string, createdTaskId: string): Pro
 })
 
 export const updateDueTasks = async () => {
-    const todaysDate = moment().format('YYYY-MM-DD')
+    const todaysDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
 
     await taskModel.updateMany({
         status: { $ne: TaskStatuses.DONE },
@@ -161,7 +161,7 @@ export const validateDate = (dueDate: string) => {
     const dueDateMoment = moment(dueDate)
     const today = moment()
 
-    if (dueDateMoment.diff(today, 'days') < 1) {
+    if (dueDateMoment.diff(today, 'days') < 0) {
         throw errors.INVALID_DUE_DATE
     }
 }
