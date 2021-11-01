@@ -92,25 +92,4 @@ describe('Calls service to create Task', () => {
             })
             .expect(HttpStatus.NOT_FOUND)
     })
-
-    it('Creates subtask - parent is subtask', async () => {
-        const parentTaskInput = createTaskInput()
-        const parentTask = await createTask(parentTaskInput)
-
-        const subTaskInput = createTaskInput({
-            parentId: parentTask.id
-        })
-
-        const subTask = await createTask(subTaskInput)
-
-        await apiRequest
-            .post('/api/v1/task')
-            .send({
-                title: 'title1',
-                description: 'description1',
-                dueDate: '2021-01-01',
-                parentId: subTask.id
-            })
-            .expect(HttpStatus.BAD_REQUEST)
-    })
 })

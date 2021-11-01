@@ -99,8 +99,6 @@ export const validateParent = async (parentId: string): Promise<ITask> => {
 
     if (!parent) throw errors.PARENT_NOT_FOUND
 
-    if (parent.parentId) throw errors.PARENT_CANT_BE_SUBTASK
-
     return parent
 }
 
