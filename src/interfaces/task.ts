@@ -6,10 +6,13 @@ export interface ITask {
     title: String
     description: String
     status: TaskStatuses
-    dueDate: Date
+    dueDate: string
     deleted: boolean
     categoryId?: string
     category?: ICategory
+    subTasksIds?: string[]
+    parentId?: string
+    daysLeft: number
 }
 
-export type ITaskInput = Omit<ITask, 'status' | 'id'>
+export type ITaskInput = Omit<ITask, 'status' | 'id' | 'daysLeft'>

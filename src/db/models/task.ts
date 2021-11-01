@@ -4,6 +4,8 @@ import { Category } from './category'
 import { v4 } from 'uuid'
 import { ITask } from '../../interfaces/task'
 
+import moment from 'moment'
+
 const populateHook = function (next) {
     this.populate('category')
 
@@ -31,8 +33,8 @@ export class Task implements ITask {
     @prop({ default: TaskStatuses.PENDING })
     status: TaskStatuses
 
-    @prop({ default: new Date() })
-    dueDate: Date
+    @prop({ required: true })
+    dueDate: string
 
     @prop({ required: true, default: false })
     deleted: boolean
@@ -47,6 +49,23 @@ export class Task implements ITask {
         justOne: true
     })
     category: Category
+
+    @prop({ required: false })
+    subTasksIds?: string[]
+
+    @prop({ required: false })
+    parentId?: string
+
+    public get daysLeft() {
+        const today = moment().format('YYYY-MM-DD')
+        const dueDate = moment(this.dueDate)
+
+        return dueDate.diff(today, 'days')
+    }
+
+    public set daysLeft(numDaysLeft) {
+        this.daysLeft = numDaysLeft
+    }
 }
 
 export const taskModel = getModelForClass(Task, {

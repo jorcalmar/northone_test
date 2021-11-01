@@ -4,9 +4,9 @@ import { HttpStatus } from '../../../src/constants'
 import { app } from '../../../src/httpService'
 
 import request from 'supertest'
-import { createCategory } from '../../../src/managers'
+import { createCategory, createTask } from '../../../src/managers'
 
-import { createCategoryInput } from '../../utils/data'
+import { createCategoryInput, createTaskInput, validDueDate, invalidDueDate } from '../../utils/data'
 
 describe('Calls service to create Task', () => {
     serviceHooks()
@@ -19,7 +19,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01'
+                dueDate: validDueDate
             })
             .expect(HttpStatus.CREATED)
     })
@@ -45,7 +45,7 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 categoryId: createdCategory.id
             })
             .expect(HttpStatus.CREATED)
@@ -57,9 +57,50 @@ describe('Calls service to create Task', () => {
             .send({
                 title: 'title1',
                 description: 'description1',
-                dueDate: '2021-01-01',
+                dueDate: validDueDate,
                 categoryId: 'any-category-id'
             })
             .expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Creates subtask successfully', async () => {
+        const parentTaskInput = createTaskInput()
+
+        const parentTask = await createTask(parentTaskInput)
+
+        const result = await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: validDueDate,
+                parentId: parentTask.id
+            })
+            .expect(HttpStatus.CREATED)
+
+        expect(result.body.data.parentId).toEqual(parentTask.id)
+    })
+
+    it('Creates subtask - parent does not exist', async () => {
+        await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: validDueDate,
+                parentId: 'any-id'
+            })
+            .expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Creates tasks with wrong date', async () => {
+        await apiRequest
+            .post('/api/v1/task')
+            .send({
+                title: 'title1',
+                description: 'description1',
+                dueDate: invalidDueDate
+            })
+            .expect(HttpStatus.BAD_REQUEST)
     })
 })

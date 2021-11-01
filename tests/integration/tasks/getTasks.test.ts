@@ -41,6 +41,10 @@ describe('Calls service to get tasks', () => {
 
         expect(returnedTasks.length).toEqual(1)
 
-        expect(returnedTasks).toMatchSnapshot()
+        expect(returnedTasks[0]).toMatchSnapshot({
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            id: expect.any(String)
+        })
     })
 })
