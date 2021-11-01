@@ -68,6 +68,18 @@ export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>
 }
 
 export const deleteTask = async (taskId: string): Promise<Task> => {
+    const task = await getOneTask(taskId)
+
+    if (!task) throw errors.RESOURCE_NOT_FOUND
+
+    if (task.subTasksIds && task.subTasksIds.length > 0) { // If the task has children.
+        const promises = task.subTasksIds.map(subTaskId => {
+            return deleteTask(subTaskId) // Recursively delete tasks.
+        })
+
+        await Promise.all(promises)
+    }
+
     const deletedTask = await taskModel.findOneAndUpdate({
         id: taskId,
         deleted: false
@@ -79,11 +91,9 @@ export const deleteTask = async (taskId: string): Promise<Task> => {
         new: true
     })
 
-    if (!deletedTask) throw errors.RESOURCE_NOT_FOUND
-
     console.log('Task deleted', { id: taskId })
 
-    return deletedTask
+    return deletedTask as Task
 }
 
 /**
@@ -100,10 +110,10 @@ export const getTasks = async (query: any = { deleted: false }): Promise<Task[]>
     return tasks
 }
 
-export const getOneTask = async (taskId: string): Promise<ITask> => {
+export const getOneTask = async (taskId: string, deleted = false): Promise<ITask> => {
     const task = await taskModel.findOne({
         id: taskId,
-        deleted: false
+        deleted
     })
 
     if (!task) throw errors.RESOURCE_NOT_FOUND
