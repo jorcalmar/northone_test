@@ -1,3 +1,5 @@
+import { TaskStatuses } from '../constants'
+
 export const updateTaskBodySchema = {
     type: 'object',
     properties: {
@@ -13,6 +15,10 @@ export const updateTaskBodySchema = {
         },
         categoryId: {
             type: 'string'
+        },
+        status: {
+            type: 'string',
+            enum: [TaskStatuses.DONE, TaskStatuses.IN_PROGRESS, TaskStatuses.PENDING]
         }
     },
     minProperties: 1,
