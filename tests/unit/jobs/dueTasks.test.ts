@@ -1,13 +1,10 @@
-import { createTasks } from '../../utils/data'
+import { createTaskInput, createTasks } from '../../utils/data'
 import { dbHooks } from '../../utils/db/dbHooks'
-import { createTask, getTasks } from '../../../src/managers'
+import { createTask, getTasks, updateDueTasks } from '../../../src/managers'
 
 import { TaskStatuses } from '../../../src/constants'
 
-import { updateDueTasks } from '../../../src/managers'
-
 import moment from 'moment'
-
 
 describe('Tests job that updates due tasks', () => {
     dbHooks()
@@ -46,5 +43,32 @@ describe('Tests job that updates due tasks', () => {
         expect(updatedTasks.length).toEqual(numExpiredTasks)
         expect(onTimeTasks.length).toEqual(numOnTimeTasks)
         expect(doneTasksExpireToday.length).toEqual(numDoneTasksExpireToday)
+    })
+
+    it('Updates all tasks - one task with subtasks', async () => {
+        const today = moment().format('YYYY-MM-DD')
+
+        const numSubTasks = 300
+
+        const parentTaskInput = createTaskInput({
+            dueDate: today,
+            status: TaskStatuses.PENDING
+        })
+
+        const parentTask = await createTask(parentTaskInput)
+
+        const subTasksInputs = createTasks(numSubTasks, {
+            dueDate: today,
+            status: TaskStatuses.PENDING,
+            parentId: parentTask.id
+        })
+
+        await Promise.all(subTasksInputs.map(task => createTask(task)))
+
+        await updateDueTasks()
+
+        const updatedTasks = await getTasks({ status: TaskStatuses.EXPIRED })
+
+        expect(updatedTasks.length).toEqual(numSubTasks + 1)
     })
 })
