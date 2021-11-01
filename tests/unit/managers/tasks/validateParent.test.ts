@@ -15,17 +15,4 @@ describe('Tests validate parent manager', () => {
     })
 
     it('Parent is not in db', async () => expect(validateParent('any-id')).rejects.toMatchObject(errors.PARENT_NOT_FOUND))
-
-    it('Parent is subtask', async () => {
-        const parentInput = createTaskInput()
-        const parentTask = await createTask(parentInput)
-
-        const subtaskInput = createTaskInput({
-            parentId: parentTask.id
-        })
-
-        const { id: subTaskId } = await createTask(subtaskInput)
-
-        expect(validateParent(subTaskId)).rejects.toMatchObject(errors.PARENT_CANT_BE_SUBTASK)
-    })
 })

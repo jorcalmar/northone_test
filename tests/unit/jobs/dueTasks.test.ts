@@ -6,7 +6,6 @@ import { TaskStatuses } from '../../../src/constants'
 
 import moment from 'moment'
 
-
 describe('Tests job that updates due tasks', () => {
     dbHooks()
 

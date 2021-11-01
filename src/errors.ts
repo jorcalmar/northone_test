@@ -16,9 +16,9 @@ export const errors = {
     message: 'Parent not found',
     name: 'PARENT_NOT_FOUND'
   },
-  PARENT_CANT_BE_SUBTASK: {
+  MAX_NESTED_LEVEL_REACHED: {
     statusCode: HttpStatus.BAD_REQUEST,
-    message: 'Parent cannot be subtask',
-    name: 'PARENT_CANT_BE_SUBTASK'
+    message: 'Too many levels of subtasks',
+    name: 'MAX_NESTED_LEVEL_REACHED'
   }
 };
