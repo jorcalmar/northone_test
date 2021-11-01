@@ -9,7 +9,7 @@ import { errors } from '../../errors'
 import config from 'config'
 
 export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => {
-    const { categoryId, parentId } = createTaskInput;
+    const { categoryId, parentId, dueDate } = createTaskInput;
 
     if (categoryId) {
         await validateCategory(categoryId)
@@ -18,6 +18,10 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
     if (parentId) {
         const parent = await validateParent(parentId)
         await validateTaskDepth(parent)
+    }
+
+    if (dueDate) {
+        validateDate(dueDate)
     }
 
     const createdTask = await taskModel.create(createTaskInput);
@@ -32,7 +36,11 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
 }
 
 export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>): Promise<Task> => {
-    const { categoryId } = updateTaskInput;
+    const { categoryId, dueDate } = updateTaskInput;
+
+    if (dueDate) {
+        validateDate(dueDate)
+    }
 
     if (categoryId) {
         await validateCategory(categoryId)
@@ -147,4 +155,13 @@ export const getSubTaskDepth = async (task: ITask, currentLevel: number) => {
 
 export const validateTaskDepth = async (task: ITask): Promise<number> => {
     return await getSubTaskDepth(task, 0)
+}
+
+export const validateDate = (dueDate: string) => {
+    const dueDateMoment = moment(dueDate)
+    const today = moment()
+
+    if (dueDateMoment.diff(today, 'days') < 1) {
+        throw errors.INVALID_DUE_DATE
+    }
 }

@@ -2,7 +2,7 @@ import { serviceHooks } from '../../utils/service/serviceHooks'
 
 import { app } from '../../../src/httpService'
 import { createTask } from '../../../src/managers'
-import { createTaskInput } from '../../utils/data'
+import { createTaskInput, validDueDate, invalidDueDate } from '../../utils/data'
 import { HttpStatus } from '../../../src/constants'
 
 import request from 'supertest'
@@ -38,5 +38,27 @@ describe('Calls service to update tasks', () => {
             .send({
                 title: 'title'
             }).expect(HttpStatus.NOT_FOUND)
+    })
+
+    it('Updates task with valid due date', async () => {
+        const { id: taskId } = await createTask(createTaskInput())
+
+        await apiRequest
+            .patch(`/api/v1/tasks/${taskId}`)
+            .send({
+                dueDate: validDueDate
+            })
+            .expect(HttpStatus.OK)
+    })
+
+    it('Updates task with invalid due date', async () => {
+        const { id: taskId } = await createTask(createTaskInput())
+
+        await apiRequest
+            .patch(`/api/v1/tasks/${taskId}`)
+            .send({
+                dueDate: invalidDueDate
+            })
+            .expect(HttpStatus.BAD_REQUEST)
     })
 })

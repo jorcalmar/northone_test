@@ -4,6 +4,8 @@ import { Category } from './category'
 import { v4 } from 'uuid'
 import { ITask } from '../../interfaces/task'
 
+import moment from 'moment'
+
 const populateHook = function (next) {
     this.populate('category')
 
@@ -49,6 +51,17 @@ export class Task implements ITask {
 
     @prop({ required: false })
     parentId?: string
+
+    public get daysLeft() {
+        const today = moment().format('YYYY-MM-DD')
+        const dueDate = moment(this.dueDate)
+
+        return dueDate.diff(today, 'days')
+    }
+
+    public set daysLeft(numDaysLeft) {
+        this.daysLeft = numDaysLeft
+    }
 }
 
 export const taskModel = getModelForClass(Task, {

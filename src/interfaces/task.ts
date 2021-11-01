@@ -12,6 +12,7 @@ export interface ITask {
     category?: ICategory
     subTasksIds?: string[]
     parentId?: string
+    daysLeft: number
 }
 
-export type ITaskInput = Omit<ITask, 'status' | 'id'>
+export type ITaskInput = Omit<ITask, 'status' | 'id' | 'daysLeft'>

@@ -1,8 +1,10 @@
 import { createTaskInput, createTasks } from '../../utils/data'
 import { dbHooks } from '../../utils/db/dbHooks'
-import { createTask, getTasks, updateDueTasks } from '../../../src/managers'
+import {  getTasks, updateDueTasks } from '../../../src/managers'
 
 import { TaskStatuses } from '../../../src/constants'
+
+import { taskModel } from '../../../src/db/models/task'
 
 import moment from 'moment'
 
@@ -32,7 +34,7 @@ describe('Tests job that updates due tasks', () => {
             status: TaskStatuses.DONE
         })
 
-        await Promise.all([...dueTasksInputs, ...onTimeTasksInputs, ...doneTasksExpireTodayInputs].map(task => createTask(task)))
+        await Promise.all([...dueTasksInputs, ...onTimeTasksInputs, ...doneTasksExpireTodayInputs].map(task => taskModel.create(task)))
 
         await updateDueTasks()
 
@@ -55,7 +57,7 @@ describe('Tests job that updates due tasks', () => {
             status: TaskStatuses.PENDING
         })
 
-        const parentTask = await createTask(parentTaskInput)
+        const parentTask = await taskModel.create(parentTaskInput)
 
         const subTasksInputs = createTasks(numSubTasks, {
             dueDate: today,
@@ -63,7 +65,7 @@ describe('Tests job that updates due tasks', () => {
             parentId: parentTask.id
         })
 
-        await Promise.all(subTasksInputs.map(task => createTask(task)))
+        await Promise.all(subTasksInputs.map(task => taskModel.create(task)))
 
         await updateDueTasks()
 

@@ -1,10 +1,15 @@
 import { ICategory } from '../../src/interfaces/category'
 import { ITaskInput, ITask } from '../../src/interfaces/task'
 
+import moment from 'moment'
+
+export const validDueDate = moment().add(4, 'days').format('YYYY-MM-DD')
+export const invalidDueDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
+
 export const createTaskInput = (values?: Partial<ITask>): ITaskInput => ({
     title: 'title1',
     description: 'description1',
-    dueDate: '2099-01-1',
+    dueDate: validDueDate,
     deleted: false,
     subTasksIds: [],
     ...values
