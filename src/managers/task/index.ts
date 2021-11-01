@@ -6,6 +6,7 @@ import moment from 'moment'
 
 import { TaskStatuses } from '../../constants'
 import { errors } from '../../errors'
+import config from 'config'
 
 export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => {
     const { categoryId, parentId } = createTaskInput;
@@ -15,7 +16,8 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
     }
 
     if (parentId) {
-        await validateParent(parentId)
+        const parent = await validateParent(parentId)
+        await validateTaskDepth(parent)
     }
 
     const createdTask = await taskModel.create(createTaskInput);
@@ -24,7 +26,7 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
         await updateParent(parentId, createdTask.id)
     }
 
-    // console.log('Task created', { id: createdTask.id })
+    console.log('Task created', { id: createdTask.id })
 
     return createdTask;
 }
@@ -123,4 +125,26 @@ export const updateDueTasks = async () => {
             status: TaskStatuses.EXPIRED
         }
     })
+}
+
+/** Checks recursively how deep in the tree the task is.
+ * If the task has no parent
+ * @subTask - subTasks that counts upwards in the tree.
+ */
+export const getSubTaskDepth = async (task: ITask, currentLevel: number) => {
+    if (currentLevel + 1 > Number(config.get('MAX_NESTED_LEVEL'))) {
+        console.log('Level reached is', currentLevel)
+        throw errors.MAX_NESTED_LEVEL_REACHED
+    }
+
+    if (task.parentId) {
+        const parent = await taskModel.findOne({ id: task.parentId }) as ITask
+        return 1 + await getSubTaskDepth(parent, currentLevel + 1)
+    } else {
+        return 0
+    }
+}
+
+export const validateTaskDepth = async (task: ITask): Promise<number> => {
+    return await getSubTaskDepth(task, 0)
 }

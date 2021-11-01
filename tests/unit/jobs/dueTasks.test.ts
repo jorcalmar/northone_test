@@ -4,7 +4,7 @@ import { createTask, getTasks } from '../../../src/managers'
 
 import { TaskStatuses } from '../../../src/constants'
 
-import { updateTasksStatusesJob } from '../../../src/jobs/updateDueTasks/updateTaskStatuses'
+import { updateDueTasks } from '../../../src/managers'
 
 import moment from 'moment'
 
@@ -37,7 +37,7 @@ describe('Tests job that updates due tasks', () => {
 
         await Promise.all([...dueTasksInputs, ...onTimeTasksInputs, ...doneTasksExpireTodayInputs].map(task => createTask(task)))
 
-        await updateTasksStatusesJob()
+        await updateDueTasks()
 
         const updatedTasks = await getTasks({ status: TaskStatuses.EXPIRED })
         const onTimeTasks = await getTasks({ status: TaskStatuses.IN_PROGRESS })
