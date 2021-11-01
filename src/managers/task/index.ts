@@ -18,6 +18,7 @@ export const createTask = async (createTaskInput: ITaskInput): Promise<Task> => 
     if (parentId) {
         const parent = await validateParent(parentId)
         await validateTaskDepth(parent)
+        validateParentDate(parent, dueDate)
     }
 
     if (dueDate) {
@@ -47,7 +48,8 @@ export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>
     }
 
     const updatedTask = await taskModel.findOneAndUpdate({
-        id: taskId
+        id: taskId,
+        deleted: false
     }, {
         $set: updateTaskInput
     }, {
@@ -55,6 +57,10 @@ export const updateTask = async (taskId: string, updateTaskInput: Partial<ITask>
     });
 
     if (!updatedTask) throw errors.RESOURCE_NOT_FOUND
+
+    if (dueDate) {
+        await validateSubTasksDueDates(updatedTask)
+    }
 
     console.log('Task updated', { id: updatedTask.id })
 
@@ -84,7 +90,7 @@ export const deleteTask = async (taskId: string): Promise<Task> => {
  * Gets all tasks.
  * @returns List of tasks
  */
-export const getTasks = async (query = {}): Promise<Task[]> => {
+export const getTasks = async (query: any = { deleted: false }): Promise<Task[]> => {
     const tasks = await taskModel.find(query)
 
     if (tasks.length === 0) {
@@ -96,7 +102,8 @@ export const getTasks = async (query = {}): Promise<Task[]> => {
 
 export const getOneTask = async (taskId: string): Promise<ITask> => {
     const task = await taskModel.findOne({
-        id: taskId
+        id: taskId,
+        deleted: false
     })
 
     if (!task) throw errors.RESOURCE_NOT_FOUND
@@ -163,5 +170,55 @@ export const validateDate = (dueDate: string) => {
 
     if (dueDateMoment.diff(today, 'days') < 0) {
         throw errors.INVALID_DUE_DATE
+    }
+}
+
+export const validateParentDate = (parent: ITask, dueDate: string) => {
+    const parentDueDate = moment(parent.dueDate)
+    const dueDateMoment = moment(dueDate)
+
+    if (dueDateMoment.diff(parentDueDate, 'days') > 0) {
+        throw errors.INVALID_DUE_DATE
+    }
+}
+
+export const updateSubTasksDates = async (taskId: string, newDueDate: string) => {
+    const task = await taskModel.findOne({ id: taskId })
+
+    const taskDueDateMoment = moment(task?.dueDate)
+    const newDueDateMoment = moment(newDueDate)
+
+    const subTasksIds = task?.subTasksIds
+
+    if (taskDueDateMoment.diff(newDueDateMoment, 'days') > 0) {
+        await taskModel.findOneAndUpdate({
+            id: task?.id,
+            deleted: false
+        }, {
+            $set: {
+                dueDate: newDueDate
+            }
+        })
+    }
+
+    if (subTasksIds) {
+        const promises = subTasksIds.map(subTaskId => {
+            return updateSubTasksDates(subTaskId, newDueDate)
+        })
+
+        return Promise.all(promises)
+    }
+}
+
+export const validateSubTasksDueDates = async (task: ITask) => {
+    const subTasksIds = task.subTasksIds
+    const newDueDate = task.dueDate
+
+    if (subTasksIds) {
+        const promises = subTasksIds.map(subTaskId => {
+            return updateSubTasksDates(subTaskId, newDueDate)
+        })
+
+        return Promise.all(promises)
     }
 }
